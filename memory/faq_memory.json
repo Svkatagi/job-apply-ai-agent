@@ -1,0 +1,159 @@
+{
+    "Full Name": "Shreyas Vijay Katagi",
+    "First Name": "Shreyas",
+    "Last Name": "Katagi",
+    "City": "Santa Clara",
+    "State": "California",
+    "Country": "United States",
+    "Street Address": "431 El Camino Real",
+    "Street Address 2": "Apt 1225",
+    "Phone": "+1-669-225-9448",
+    "Email": "svkatagi@gmail.com",
+    "Zipcode": "95050",
+    "LinkedIn": "https://www.linkedin.com/in/shreyaskatagi",
+    "Work Authorization Status": "Authorized to work in the United States without sponsorship",
+    "Visa Status": "F1-OPT (STEM Eligible)",
+    "Willingness to Relocate": "Yes",
+    "Preferred Locations": ["California", "Texas", "Washington"],
+    "Salary Expectation": "$90,000 - $100,000 per year",
+    "Notice Period": "Immediate",
+    "How Did You Hear About This Job": "LinkedIn",
+    "Race/Ethnicity": "Asian",
+    "Gender": "Male",
+    "Veteran Status": "Not a Veteran",
+    "Disability Status": "No",
+    "Work Experience": [
+        {
+            "Job Title": "Analyst",
+            "Company": "Deloitte US",
+            "Location": "Bengaluru, India",
+            "Start Date": "September 2021",
+            "End Date": "August 2023",
+            "Responsibilities": [
+                "Engineered data-centric client solutions leveraging SAP-CRM, NoSQL databases, and advanced Excel analytics, resulting in a 30% reduction in billing cycle time.",
+                "Developed automated data pipeline solutions using Python, SQL, and Power BI, reducing backlog from 60% to 5%.",
+                "Spearheaded business process improvements as a techno-functional analyst with detailed documentation and strict validation.",
+                "Led technical requirement gathering and Agile-based solution design with cross-functional teams."
+            ]
+        },
+        {
+            "Job Title": "Data Analyst",
+            "Company": "Lenovo",
+            "Location": "Bengaluru, India",
+            "Start Date": "March 2021",
+            "End Date": "July 2021",
+            "Responsibilities": [
+                "Analyzed financial data and detected 50+ potential fraud cases using SQL and Python on Amazon Redshift.",
+                "Optimized business workflows by collaborating with global senior management using Agile.",
+                "Architected data pipelines using AWS Lambda, Glue, S3, and developed real-time dashboards with Power BI."
+            ]
+        },
+        {
+            "Job Title": "Data Scientist Intern",
+            "Company": "Hindustan Coca-Cola Beverages Pvt Ltd",
+            "Location": "Bengaluru, India",
+            "Start Date": "September 2020",
+            "End Date": "January 2021",
+            "Responsibilities": [
+                "Conducted multi-source data analysis optimizing distribution networks, reducing transportation costs by 15%.",
+                "Built 7+ interactive dashboards in Power BI and automated reporting with Microsoft Power Automate.",
+                "Collaborated across logistics, finance, and supply chain teams for transportation metric analysis."
+            ]
+        }
+    ],
+    "Education": [
+        {
+            "Degree": "Master of Science",
+            "Field": "Computer Science",
+            "University": "Santa Clara University",
+            "Location": "Santa Clara, California",
+            "Start Date": "September 2023",
+            "Expected Graduation Date": "June 2025",
+            "Achievements": [
+                "Built real-time Zoom transcription agent using OpenAI Whisper for MOMs and Q&A.",
+                "Developed a RAG-based AI assistant using vector embeddings and semantic search.",
+                "Created face recognition model with 88% accuracy using DeepFace and Azure."
+            ]
+        },
+        {
+            "Degree": "Bachelor of Engineering",
+            "Field": "Computer Science",
+            "University": "KLE Technological University",
+            "Location": "Hubballi, India",
+            "Start Date": "August 2017",
+            "Graduation Date": "June 2021",
+            "Achievements": [
+                "Developed ML models for 91% boat identification and 82% insurance claim prediction using TensorFlow.",
+                "Worked across teams to create scalable AI solutions."
+            ]
+        }
+    ],
+    "Skills": [
+        "Python",
+        "Java",
+        "Spring Boot",
+        "REST APIs",
+        "Microservices",
+        "AWS (EC2, Lambda, ECS, S3, RDS)",
+        "Docker",
+        "Docker Compose",
+        "Kubernetes",
+        "SQL",
+        "PostgreSQL",
+        "MongoDB",
+        "DynamoDB",
+        "Git",
+        "CI/CD",
+        "Jenkins",
+        "GitLab",
+        "Terraform",
+        "JIRA",
+        "Agile",
+        "Hibernate",
+        "Pandas",
+        "NumPy",
+        "TensorFlow",
+        "PyTorch",
+        "Scikit-learn",
+        "Keras",
+        "Apache Kafka",
+        "Apache Spark",
+        "GCP",
+        "Hadoop",
+        "Redis",
+        "Maven",
+        "Gradle",
+        "JUnit",
+        "Swagger",
+        "Power BI",
+        "Tableau",
+        "Excel",
+        "Postman",
+        "Selenium",
+        "FastAPI",
+        "AI Agent Systems"
+    ],
+    "Certifications": [],
+    "Portfolio Website": "",
+    "GitHub": "https://github.com/Svkatagi",
+    "Projects": [
+        {
+            "Title": "AI-Powered Zoom Transcription Agent",
+            "Description": "Developed a real-time transcription agent for Zoom meetings using OpenAI Whisper, enabling efficient meeting minutes and Q&A documentation."
+        },
+        {
+            "Title": "RAG-Based AI Assistant",
+            "Description": "Created a Retrieval-Augmented Generation (RAG) based AI assistant utilizing vector embeddings and semantic search for enhanced information retrieval."
+        },
+        {
+            "Title": "Face Recognition Model",
+            "Description": "Built a face recognition model achieving 88% accuracy using DeepFace and Azure, demonstrating proficiency in computer vision techniques."
+        }
+    ],
+    "Languages": [
+        {
+            "Language": "English",
+            "Proficiency": "Fluent"
+        }
+    ]
+}

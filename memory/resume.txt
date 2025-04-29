@@ -1,0 +1,45 @@
+﻿Shreyas Katagi
+Santa Clara, CA, USA | svkatagi18@gmail.com | linkedin.com/in/shreyaskatagi | Ph: +1(669) 225-9448
+
+
+SUMMARY
+Machine Learning Engineer and Data Scientist with expertise in AI, deep learning, predictive modeling, and agentic AI systems. Skilled in building intelligent agents, optimizing ML models, automating workflows, and deploying scalable, cloud-based AI solutions that drive innovation, efficiency, and meaningful real-world impact.
+
+
+WORK EXPERIENCE
+Deloitte US         Bengaluru
+Analyst        Sep 2021 - Aug 2023
+* Engineered data-centric client solutions leveraging SAP-CRM, NoSQL databases, and advanced Excel analytics, resulting in a 30% reduction in billing cycle time and a significant improvement in operational efficiency.
+* Developed automated data pipeline solutions using Python, SQL, and Power BI dashboards for utility billing optimization, reducing backlog from 60% to 5% through systematic data analysis and targeted process improvements.
+* Spearheaded business process improvements as a techno-functional analyst, converting client needs into technical solutions while ensuring thorough documentation and strict validation across dev and QA environments.
+* Led technical requirement gathering and solution design, employing Agile methodologies to bridge business needs with technical implementations while coordinating cross-functional development teams for seamless deployments.
+
+
+Lenovo         Bengaluru
+Data Analyst         Mar 2021 - Jul 2021
+* Analyzed financial statements, business summaries, and dashboards using SQL on Amazon Redshift and Python to extract key insights and uncover over 50 potential fraudulent cases, driving data-informed decision-making.
+* Collaborated with senior management across India, China, and Europe using Agile methodologies to optimize business workflows and assess various fraud detection techniques, driving continuous process improvement.
+* Architected end-to-end data processing pipelines using AWS Lambda, AWS Glue, and Amazon S3, creating 15+ Python scripts for ETL workflows and implementing real-time visualization dashboards in Power BI.
+
+
+Hindustan Coca-Cola Beverages Pvt Ltd         Bengaluru
+Data Scientist         Sep 2020 - Jan 2021
+* Conducted comprehensive data analysis using Python and SQL to optimize product distribution networks, integrating data from 6 diverse sources and applying statistical techniques. Achieved a 15% reduction in transportation costs for this multi-million-dollar operation through systematic A/B testing methodologies.
+* Engineered 7+ interactive analytical dashboards to visualize A/B testing outcomes through Power BI, delivering weekly insights to senior management using advanced Excel and Microsoft Power Automate for automated reporting.
+* Collaborated cross-functionally with logistics, supply chain, and finance teams to evaluate transportation cost metrics and developed detailed technical documentation to ensure knowledge transfer and continuity of analytical scripts.
+
+
+EDUCATION
+Santa Clara University         Santa Clara, California
+MS, Computer Science        2023 - 2025
+* Built advanced Agentic AI systems, including a real-time Zoom transcription agent using OpenAI Whisper for automated MOMs and Q&A, and a RAG-based assistant leveraging vector embeddings, semantic search, and NLP, along with several other custom AI agents for task automation and contextual reasoning.
+* Developed a high-accuracy face recognition model (88%) using DeepFace on Azure, with complete documentation, technical presentations, and cross-functional collaboration.
+
+
+KLE Technological University        Hubballi (India)
+BE, Computer Science        2017 - 2021
+* Developed ML models (91% boat identification, 82% insurance claim prediction) using Python, TensorFlow, and data processing on diverse datasets, collaborating across teams for scalable solutions.
+
+
+SKILLS
+Python | Java | Spring Boot | REST APIs | Microservices | AWS (EC2, Lambda, ECS, S3) | Docker | Kubernetes | SQL | DynamoDB | PostgreSQL | MongoDB | Git | CI/CD | Jenkins | GitLab | Terraform | JIRA | Agile | Hibernate | Pandas | NumPy | TensorFlow | PyTorch | Scikit-learn | Keras | Apache Kafka | Apache Spark | GCP | Hadoop | Docker Compose | Redis | AWS RDS | Maven | Gradle | JUnit | Swagger | Power BI | Tableau | Excel | Postman | Selenium | FastAPI| AIagent
