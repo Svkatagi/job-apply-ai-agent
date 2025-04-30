@@ -1,6 +1,5 @@
 # src/tools/hands_tool.py
 
-# 📦 Import necessary libraries
 import os
 import time
 from selenium.webdriver.common.by import By
@@ -10,17 +9,14 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.common.exceptions import NoSuchElementException, ElementClickInterceptedException
 from selenium.webdriver.support import expected_conditions as EC
 
-# 🛠️ Correct import after restructure
-from src.tools.logger_tool import log_event  # Custom logger to track steps
+# Updated import: includes new helper
+from src.tools.logger_tool import log_event, format_exception
 
-# ✋ Hands Tool: Executes actions (no thinking)
 class HandsTool:
     def __init__(self, driver):
-        """Initialize HandsTool with Selenium driver."""
         self.driver = driver
 
     def click_element(self, identifier: str, by: str = "xpath"):
-        """Clicks an element by selector (xpath, css, id, name)."""
         try:
             if by == "xpath":
                 element = self.driver.find_element(By.XPATH, identifier)
@@ -38,13 +34,11 @@ class HandsTool:
             log_event(f"✅ Clicked element: {identifier} ({by})")
             time.sleep(2)
             return True
-
         except (NoSuchElementException, ElementClickInterceptedException) as e:
-            log_event(f"⚠️ Failed to click: {identifier} ({by}) - {str(e)}")
+            log_event(f"⚠️ Failed to click: {identifier} ({by}) - {format_exception(e)}")
             return False
 
     def type_text(self, identifier: str, text: str, by: str = "xpath"):
-        """Types into an input field by selector."""
         try:
             if by == "xpath":
                 field = self.driver.find_element(By.XPATH, identifier)
@@ -63,13 +57,11 @@ class HandsTool:
             log_event(f"✅ Typed text in field: {identifier} ({by}) --> {text}")
             time.sleep(1)
             return True
-
         except NoSuchElementException as e:
-            log_event(f"⚠️ Failed to type: {identifier} ({by}) - {str(e)}")
+            log_event(f"⚠️ Failed to type: {identifier} ({by}) - {format_exception(e)}")
             return False
 
     def select_dropdown(self, identifier: str, option_text: str, by: str = "xpath"):
-        """Selects an option from a dropdown by visible text."""
         try:
             if by == "xpath":
                 dropdown = Select(self.driver.find_element(By.XPATH, identifier))
@@ -87,13 +79,11 @@ class HandsTool:
             log_event(f"✅ Selected dropdown option: {option_text} ({by})")
             time.sleep(1)
             return True
-
         except NoSuchElementException as e:
-            log_event(f"⚠️ Failed to select dropdown: {identifier} ({by}) - {str(e)}")
+            log_event(f"⚠️ Failed to select dropdown: {identifier} ({by}) - {format_exception(e)}")
             return False
 
     def check_checkbox(self, identifier: str, by: str = "xpath"):
-        """Checks a checkbox if not already checked."""
         try:
             if by == "xpath":
                 checkbox = self.driver.find_element(By.XPATH, identifier)
@@ -114,13 +104,11 @@ class HandsTool:
                 log_event(f"ℹ️ Checkbox already checked: {identifier} ({by})")
             time.sleep(1)
             return True
-
         except NoSuchElementException as e:
-            log_event(f"⚠️ Failed to check checkbox: {identifier} ({by}) - {str(e)}")
+            log_event(f"⚠️ Failed to check checkbox: {identifier} ({by}) - {format_exception(e)}")
             return False
 
     def upload_file(self, identifier: str, file_path: str, by: str = "xpath"):
-        """Uploads a file to an input[type='file'] field."""
         try:
             if by == "xpath":
                 upload_input = self.driver.find_element(By.XPATH, identifier)
@@ -139,9 +127,8 @@ class HandsTool:
             log_event(f"✅ Uploaded file: {file_path} into {identifier} ({by})")
             time.sleep(2)
             return True
-
         except NoSuchElementException as e:
-            log_event(f"⚠️ Failed to upload file: {identifier} ({by}) - {str(e)}")
+            log_event(f"⚠️ Failed to upload file: {identifier} ({by}) - {format_exception(e)}")
             return False
 
     def click(self, selector: str):
@@ -153,7 +140,7 @@ class HandsTool:
             self.driver.execute_script("arguments[0].click();", element)
             log_event(f"✅ Clicked element: {selector} (xpath)")
         except Exception as e:
-            log_event(f"⚠️ Failed to click element: {selector} (xpath) - {str(e)}")
+            log_event(f"⚠️ Failed to click element: {selector} (xpath) - {format_exception(e)}")
             try:
                 self.driver.find_element(By.TAG_NAME, "body").send_keys(Keys.ESCAPE)
                 log_event("🔍 Modal overlay detected, sent ESC key.")
@@ -173,11 +160,11 @@ class HandsTool:
                 for btn in buttons:
                     if "reject" in btn.text.lower() or "decline" in btn.text.lower():
                         btn.click()
-                        log_event("✅ Cookie modal dismissed by button.")
+                        log_event("✅ Cookie modal dismissed via Reject/Decline button.")
                         time.sleep(1)
                         break
-        except Exception as e:
-            log_event(f"ℹ️ No cookie modal or dismissal failed: {str(e)}")
+        except Exception:
+            log_event("ℹ️ No cookie modal or nothing to dismiss.")
 
         for action in actions:
             if self.detect_success_message():
@@ -238,7 +225,7 @@ class HandsTool:
             time.sleep(1)
             return True
         except Exception as e:
-            log_event(f"⚠️ Failed dynamic select: {selector} -> {option_text} - {str(e)}")
+            log_event(f"⚠️ Failed dynamic select: {selector} -> {option_text} - {format_exception(e)}")
             return False
 
     def detect_success_message(self):
