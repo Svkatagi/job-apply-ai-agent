@@ -35,7 +35,8 @@ class HandsTool:
             time.sleep(2)
             return True
         except (NoSuchElementException, ElementClickInterceptedException) as e:
-            log_event(f"⚠️ Failed to click: {identifier} ({by}) - {format_exception(e)}")
+            log_event(f"⚠️ Failed to click") 
+            #log_event(f"⚠️ Failed to click: {identifier} ({by}) - {format_exception(e)}")
             return False
 
     def type_text(self, identifier: str, text: str, by: str = "xpath"):
@@ -58,7 +59,8 @@ class HandsTool:
             time.sleep(1)
             return True
         except NoSuchElementException as e:
-            log_event(f"⚠️ Failed to type: {identifier} ({by}) - {format_exception(e)}")
+            log_event(f"⚠️ Failed to type") 
+            #log_event(f"⚠️ Failed to type: {identifier} ({by}) - {format_exception(e)}")
             return False
 
     def select_dropdown(self, identifier: str, option_text: str, by: str = "xpath"):
@@ -80,7 +82,8 @@ class HandsTool:
             time.sleep(1)
             return True
         except NoSuchElementException as e:
-            log_event(f"⚠️ Failed to select dropdown: {identifier} ({by}) - {format_exception(e)}")
+            log_event(f"⚠️ Failed to select dropdown")
+            #log_event(f"⚠️ Failed to select dropdown: {identifier} ({by}) - {format_exception(e)}")
             return False
 
     def check_checkbox(self, identifier: str, by: str = "xpath"):
@@ -105,7 +108,8 @@ class HandsTool:
             time.sleep(1)
             return True
         except NoSuchElementException as e:
-            log_event(f"⚠️ Failed to check checkbox: {identifier} ({by}) - {format_exception(e)}")
+            log_event(f"⚠️ Failed to check checkbox")
+            #log_event(f"⚠️ Failed to check checkbox: {identifier} ({by}) - {format_exception(e)}")
             return False
 
     def upload_file(self, identifier: str, file_path: str, by: str = "xpath"):
@@ -128,7 +132,8 @@ class HandsTool:
             time.sleep(2)
             return True
         except NoSuchElementException as e:
-            log_event(f"⚠️ Failed to upload file: {identifier} ({by}) - {format_exception(e)}")
+            log_event(f"⚠️ Failed to upload file")
+            #log_event(f"⚠️ Failed to upload file: {identifier} ({by}) - {format_exception(e)}")
             return False
 
     def click(self, selector: str):

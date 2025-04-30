@@ -40,7 +40,8 @@ except Exception as e:
 # 🖥️ Start browser and tools
 driver = get_driver()
 hands = HandsTool(driver)
-
+log_event(f"🔗 -------------------------------------------------\n")
+log_event(f"🔗 -------------------------------------------------")
 # 🔁 Process each job link
 for index, link in enumerate(job_links, start=1):
     try:
@@ -52,27 +53,41 @@ for index, link in enumerate(job_links, start=1):
         retries = 0
         prev_plan_hash = None
         prev_dom_hash = None
-
+        summary = {}
         while True:
             # 🔍 Scrape DOM
             dom = driver.page_source
             dom_hash = hash(dom)
 
             # 🤖 Ask Gemini for a plan
-            plan = decide_next_actions(dom, memory_data)
+            plan = decide_next_actions(dom, memory_data,summary)
             if not plan:
                 log_event("⚠️ No plan received. Marking as failed.")
-                record_application_result(link, "Failed", {})
+                record_application_result(link, "Failed", summary)
                 break
 
             actions = plan.get("actions", [])
             status = plan.get("status", "")
-            summary = plan.get("job_summary", {})
             reason = plan.get("reason", "")
-
+            #log_event(f"🔍 ------------------------------- SUMMARY 1: {summary}")
+            new_summary = plan.get("job_summary", {})
+            summary.update(new_summary)  # this keeps previous values unless Gemini overwrites them
+            #log_event(f"🔍 ------------------------------- SUMMARY 2: {summary}")
+            
             plan_hash = json.dumps(actions, sort_keys=True)
-
             log_event(f"🧠 Plan hash: {plan_hash[:50]}...")
+
+            # ✅ Success case (confirmed application)
+            if status == "success":
+                log_event("🎯 Gemini detected successful application.")
+                record_application_result(link, "Success", summary)
+                break
+
+            # ❌ Bot/spam/rejected failure
+            if status == "failed":
+                log_event("🚫 Application was rejected or flagged as spam.")
+                record_application_result(link, "Failed", summary)
+                break
 
             # 🛑 Human intervention
             if status == "human_intervention_required":
@@ -104,7 +119,8 @@ for index, link in enumerate(job_links, start=1):
 
                 log_event("🧰 Actions completed.")
                 if summary:
-                    log_event(f"📋 Job Summary: {summary}")
+                    log_event(f"📋 Job Summary not empty")
+                    #log_event(f"📋 Job Summary: {summary}")
 
                 time.sleep(2)
 
@@ -119,9 +135,13 @@ for index, link in enumerate(job_links, start=1):
 
     except Exception as e:
         log_event(f"💥 Error on job {index}: {format_exception(e)}")
-        record_application_result(link, "Failed", {})
+        record_application_result(link, "Failed", summary)
         clean_tabs(driver)
 
+    log_event(f"🔄 Job {index} cleaned up.")
+    log_event(f"🔗 -------------------------------------------------\n")
+    log_event(f"🔗 -------------------------------------------------")
+    
 # 🏁 All done
 driver.quit()
-log_event("🏁 All job links processed. Browser closed.")
+log_event("🏁 All job links processed. Browser closed. 🏁")
