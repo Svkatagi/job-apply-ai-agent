@@ -43,6 +43,9 @@ driver = get_driver()
 hands = HandsTool(driver)
 log_event(f"🔗 -------------------------------------------------\n")
 log_event(f"🔗 -------------------------------------------------")
+
+retry_tracker = {}
+
 # 🔁 Process each job link
 for index, link in enumerate(job_links, start=1):
     try:
@@ -51,14 +54,19 @@ for index, link in enumerate(job_links, start=1):
         driver.get(link)
         time.sleep(3)
 
-        retries = 0
-        prev_plan_hash = None
-        prev_dom_hash = None
-        summary = {}
+        prev_signature = "" # Placeholder for previous signature
+
+        summary = {} # Initialize summary dictionary
+
         while True:
             # 🔍 Scrape DOM
-            dom = driver.page_source
-            dom_hash = hash(dom)
+            dom = driver.page_source # Get the current DOM
+
+            # 📌 Generate a unique signature of the page
+            current_url = driver.current_url.split("?")[0]  # Ignore query params
+            page_title = driver.title.strip() # Get the page title
+            signature = f"{current_url}::{page_title}"  # Create a unique signature for the page
+            log_event(f"🧭 Page signature: {signature}")
 
             # 🤖 Ask Gemini for a plan
             plan = decide_next_actions(dom, memory_data,summary)
@@ -67,17 +75,17 @@ for index, link in enumerate(job_links, start=1):
                 record_application_result(link, "Failed", summary)
                 break
 
-            actions = plan.get("actions", [])
-            status = plan.get("status", "")
-            reason = plan.get("reason", "")
-            #log_event(f"🔍 ------------------------------- SUMMARY 1: {summary}")
-            new_summary = plan.get("job_summary", {})
+            actions = plan.get("actions", []) # Get actions from plan
+            status = plan.get("status", "") # Get status from plan
+            reason = plan.get("reason", "") 
+
+            new_summary = plan.get("job_summary", {}) # Get job summary from plan
             summary.update(new_summary)  # this keeps previous values unless Gemini overwrites them
-            #log_event(f"🔍 ------------------------------- SUMMARY 2: {summary}")
+            
             # 📝 Generate cover letter PDF if present
-            cover_letter_text = plan.get("cover_letter_text")
-            if cover_letter_text:
-                log_event("📄 Generating cover letter PDF...")
+            cover_letter_text = plan.get("cover_letter_text") # Get cover letter text from plan
+            if cover_letter_text: # Check if cover letter text is present
+                log_event("📄 Generating cover letter PDF...") 
                 try:
                     # Convert smart quotes and other unicode to basic ASCII alternatives
                     sanitized_text = cover_letter_text.encode("ascii", "ignore").decode("ascii")
@@ -98,8 +106,6 @@ for index, link in enumerate(job_links, start=1):
             else:
                 log_event("⚠️ No cover letter text provided. Skipping PDF generation.")
             
-            plan_hash = json.dumps(actions, sort_keys=True)
-            log_event(f"🧠 Plan hash: {plan_hash[:50]}...")
 
             # ✅ Success case (confirmed application)
             if status == "success":
@@ -119,18 +125,19 @@ for index, link in enumerate(job_links, start=1):
                 record_application_result(link, "Human Intervention", summary)
                 break
 
-            # 🔁 Retry if plan + DOM didn't change
-            if plan_hash == prev_plan_hash and dom_hash == prev_dom_hash:
-                retries += 1
-                log_event(f"🔁 Repeated plan (Retry {retries}/3)")
-                if retries >= 3:
-                    log_event("❌ 3 retries reached. Marking as failed.")
-                    record_application_result(link, "Failed", summary)
-                    break
+            if signature != prev_signature: # Check if the page signature has changed
+                retry_tracker[signature] = 1 # Reset retry count for new signature
+                prev_signature = signature # Update previous signature
+                log_event("🔄 New page signature detected. Retry count reset to 1.")
             else:
-                retries = 0
-                prev_plan_hash = plan_hash
-                prev_dom_hash = dom_hash
+                retry_tracker[signature] += 1 # Increment retry count for the same signature
+                log_event(f"🔁 Retry {retry_tracker[signature]}/3 for signature.")
+
+            if retry_tracker[signature] >= 3: # Check if retry count exceeds 3
+                log_event(f"❌ 3 retries for page: {signature}. Marking as failed.")
+                record_application_result(link, "Failed", summary) # Mark as failed after 3 retries
+                break
+
 
             # 🛠️ Execute actions
             if status == "action_required" and actions:
