@@ -3,3 +3,4 @@ chromedriver-autoinstaller  # Automatically download the correct ChromeDriver
 google-generativeai  # Access Gemini LLM API (decision making + answer generation)
 python-dotenv  # Load API keys, LinkedIn username/password from .env file
 pandas  # Read and write job links and results into CSV easily
+fpdf==1.7.2 # Create PDF files for job applications

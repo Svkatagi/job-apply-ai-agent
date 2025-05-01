@@ -1,0 +1,12 @@
+Dear Hiring Team,
+
+I am excited to apply for the [Job Title] role at [Company Name]. With a strong background in machine learning, AI systems, and real-world automation, I am confident in my ability to contribute meaningfully to your mission and engineering goals.
+
+My experience includes building autonomous AI agents that summarize meetings in real time, auto-apply to job platforms using reasoning-based DOM interaction, and generate tailored content using LLMs like Gemini. Previously, I served as a Data Science Intern at Coca-Cola, where I optimized product distribution using predictive models—resulting in a 15% cost reduction.
+
+What draws me to [Company Name] is your focus on [insert mission or product highlight from job description]. I resonate deeply with the role’s emphasis on [insert team goal or technology], and believe my blend of systems engineering, prompt design, and full-stack AI development makes me a strong match.
+
+I’d welcome the opportunity to bring my skills to [Company Name] and contribute to cutting-edge innovation. Thank you for your time and consideration—I look forward to the possibility of speaking with your team.
+
+Sincerely,  
+Shreyas Katagi

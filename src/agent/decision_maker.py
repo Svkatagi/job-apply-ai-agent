@@ -23,12 +23,15 @@ def decide_next_actions(dom_html: str, memory_data: dict, job_context: dict = {}
     Returns:
         dict: Action plan and job summary (if extracted).
     """
+    with open("memory/sample_cover_letter.txt", "r", encoding="utf-8") as f:
+        cover_letter_reference = f.read()
+        log_event("📄 Loaded cover letter reference for tone and structure.")
 
     log_event("🔎 Asking Gemini to analyze DOM and generate HandsTool actions...")
 
     # 📝 Prepare the full prompt for Gemini
     prompt = f"""
-You are a strict agentic AI working for an Auto-Apply bot.
+You are a strict, high-precision agentic AI working for an Auto-Apply bot.
 
 # 📄 Current Page DOM:
 -----
@@ -45,18 +48,24 @@ You are a strict agentic AI working for an Auto-Apply bot.
 {json.dumps(job_context, indent=2)}
 -----
 
-# 🎯 Your Task:
-1. Carefully analyze the HTML DOM and detect all job-related details.
-2. Generate a step-by-step list of actions (click, type, select, upload).
-3. Extract the following fields into "job_summary":
+# 📄 Cover Letter Reference (follow this tone and structure):
+-----
+{cover_letter_reference}
+-----
 
+# 🎯 Your Task:
+1. Analyze the DOM thoroughly to:
+    - Extract job-related metadata into a structured "job_summary".
+    - Plan step-by-step form interaction actions (click, type, select, check, upload).
+
+2. Your output must contain these 15 fields inside "job_summary":
 - Job Title
 - Company Name
 - Location
 - Location Type
 - Employment Type
 - Seniority Level
-- Summary
+- Summary (2–3 sentence paragraph)
 - Responsibilities
 - Minimum Qualifications
 - Preferred Qualifications
@@ -64,51 +73,80 @@ You are a strict agentic AI working for an Auto-Apply bot.
 - Salary
 - Equity
 - Perks / Benefits
-- Relevance Score (0 to 100): Based on how well the memory_data fits the role.
+- Relevance Score (0–100): Based on how closely the candidate memory matches this job.
 
+    ⚠️ If any field is not reliably extractable ➔ use an empty string ("").
+    ⚠️ If a value already exists in job_context, only update if the new one is significantly better (longer, clearer, more detailed).
+    ⚠️ "Summary" must be a concise paragraph. Do not use markdown, line breaks, bullet points, or repeat other fields.
 
-- The "Summary" field must be a short paragraph (2–3 full sentences) describing the overall role, not a bullet list.
-- Do not use bullet points, markdown, or line breaks in the summary.
-- Avoid repeating other field content like responsibilities or perks.
+3. For "Relevance Score":
+    - Estimate match between memory_data and job qualifications/responsibilities.
+    - Consider role, skills, experience, and location alignment.
 
-4. For each field:
-    - If no reliable value can be extracted ➔ set its value to an empty string ("").
-    - If a value is already present in job_context, only update if the new value is significantly better (longer, more accurate, more detailed).
-    - The "Summary" field must be a short paragraph (2–3 full sentences) describing the overall role, not a bullet list. Avoid markdown, line breaks, or repeating responsibilities.
+4. Before suggesting an action:
+    - Skip typing if the input field has a non-empty `value` attribute.
+    - Skip checking/selecting if the element is already selected (e.g. `checked="true"`).
+    - Avoid clicking a submit button if the DOM shows submission confirmation (e.g. "Thank you", "already applied").
 
-5. Ensure the Relevance Score reflects how closely the candidate’s profile matches the job (skills, experience, qualifications).
+5. Always plan only what is **required** based on the current DOM state.
+    - Never suggest duplicate or redundant actions.
+    - Avoid resubmitting already completed forms.
+
+6. If the DOM includes a file input for "Cover Letter":
+    - Generate a tailored professional cover letter under "cover_letter_text".
+    - Use information from:
+        - memory_data (resume, skills, education, etc.)
+        - job_summary (Job Title, Company Name, Responsibilities, etc.)
+    - Follow the reference format above.
+    - Save it as: memory/Shreyas.Katagi Coverletter.pdf
+    - Add an upload action using that file.
+
+7. If no cover letter is required ➔ do not include "cover_letter_text".
 
 # ⚠️ Special Detection Rules:
-- If the page confirms the application is submitted ➔ set "status": "success"
-- If the page says you're rejected, spammed, or flagged as a bot ➔ set "status": "failed"
-- If CAPTCHA, email verification, or other human-only barriers are detected ➔ set "status": "human_intervention_required", and include "reason"
+- If the page confirms that the application has been submitted ➔ set "status": "success"
+- If the page indicates rejection, spam detection, or bot behavior ➔ set "status": "failed"
+- If human-only challenges like CAPTCHA or email verification appear ➔ set "status": "human_intervention_required" and explain the reason
 
 # 📦 Output Requirements:
 - Return ONLY valid JSON.
 - Must contain:
-    - "status": "action_required" OR "human_intervention_required" OR "success" OR "failed"
+    - "status": one of ["action_required", "human_intervention_required", "success", "failed"]
     - "actions": [list of action dicts]
     - "job_summary": object with all 15 fields listed above
+    - Optional: "cover_letter_text": string (only if a cover letter is required)
 
-- Each action must include:
+# ⚙️ Action Format:
+Each action must include:
     - "type": one of ["click", "type", "select", "dynamic_select", "check", "upload"]
     - "selector": XPath or CSS
     - Optional fields: "text", "option_text", "file_path"
 
 # ⚡ Important Rules:
 - Prefer XPath selectors.
-- Do not hallucinate values.
-- Match fields exactly from DOM.
-- No explanations. Return only the required JSON.
+- Match field labels and inputs exactly from the DOM.
+- Do not hallucinate job fields.
+- Do not return markdown or explanations. Only valid JSON.
 
 # 📋 Example JSON Output:
 
 {{
   "status": "action_required",
   "actions": [
-    {{"type": "type", "selector": "//input[@name='email']", "text": "shreyas@example.com"}},
-    {{"type": "upload", "selector": "//input[@type='file']", "file_path": "memory/Resume Shreyas.Katagi.pdf"}},
-    {{"type": "click", "selector": "//button[@id='submit-button']"}}
+    {{
+      "type": "upload",
+      "selector": "//input[@name='coverLetter']",
+      "file_path": "memory/Shreyas.Katagi Coverletter.pdf"
+    }},
+    {{ "type": "upload", 
+       "selector": "//input[@type='resume']", 
+       "file_path": "memory/Resume Shreyas.Katagi.pdf" 
+    }},
+    {{
+      "type": "type",
+      "selector": "//input[@name='email']",
+      "text": "shreyas@example.com"
+    }}
   ],
   "job_summary": {{
     "Job Title": "AI Engineer",
@@ -117,21 +155,21 @@ You are a strict agentic AI working for an Auto-Apply bot.
     "Location Type": "Remote",
     "Employment Type": "Full-time",
     "Seniority Level": "Mid-Level",
-    "Summary": "You'll build LLM-based systems at OpenAI...",
-    "Responsibilities": "Develop and deploy GenAI apps...",
-    "Minimum Qualifications": "2+ years Python, ML",
-    "Preferred Qualifications": "LLM experience, cloud",
+    "Summary": "OpenAI is hiring a full-time AI engineer to build LLM-based tools...",
+    "Responsibilities": "Build, deploy and test ML models...",
+    "Minimum Qualifications": "2+ years Python/ML",
+    "Preferred Qualifications": "LLM or GenAI experience",
     "Tech Stack / Skills": ["Python", "Docker", "LLMs"],
     "Salary": "120000-180000 USD",
     "Equity": "Available",
-    "Perks / Benefits": "Health, PTO, remote allowance",
+    "Perks / Benefits": "Health, PTO, remote stipend",
     "Relevance Score": 87
-  }}
+  }},
+  "cover_letter_text": "Dear Hiring Team at OpenAI,\n\nI'm excited to apply for the AI Engineer role..."
 }}
 
-Strictly output valid JSON. No extra text or explanations.
+Strictly return valid JSON. No extra explanations.
 """
-
 
     try:
         # 🔢 Count and log estimated tokens

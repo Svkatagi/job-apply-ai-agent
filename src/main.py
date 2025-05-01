@@ -11,6 +11,7 @@ from src.agent.decision_maker import decide_next_actions
 from src.tools.hands_tool import HandsTool
 from src.tools.logger_tool import log_event, format_exception
 from src.tools.scribe_tool import record_application_result
+from fpdf import FPDF
 
 # 🧹 Close all tabs except the base one
 def clean_tabs(driver):
@@ -73,6 +74,29 @@ for index, link in enumerate(job_links, start=1):
             new_summary = plan.get("job_summary", {})
             summary.update(new_summary)  # this keeps previous values unless Gemini overwrites them
             #log_event(f"🔍 ------------------------------- SUMMARY 2: {summary}")
+            # 📝 Generate cover letter PDF if present
+            cover_letter_text = plan.get("cover_letter_text")
+            if cover_letter_text:
+                log_event("📄 Generating cover letter PDF...")
+                try:
+                    # Convert smart quotes and other unicode to basic ASCII alternatives
+                    sanitized_text = cover_letter_text.encode("ascii", "ignore").decode("ascii")
+
+                    pdf = FPDF()
+                    pdf.set_auto_page_break(auto=True, margin=15)
+                    pdf.add_page()
+                    pdf.set_font("Arial", size=12)
+
+                    for line in sanitized_text.split("\n"):
+                        pdf.multi_cell(0, 10, line.strip())
+
+                    cover_letter_path = "memory/Shreyas.Katagi Coverletter.pdf"
+                    pdf.output(cover_letter_path)
+                    log_event("📝 Cover letter PDF generated and saved.")
+                except Exception as e:
+                    log_event(f"❌ Failed to generate cover letter PDF: {e}")
+            else:
+                log_event("⚠️ No cover letter text provided. Skipping PDF generation.")
             
             plan_hash = json.dumps(actions, sort_keys=True)
             log_event(f"🧠 Plan hash: {plan_hash[:50]}...")
