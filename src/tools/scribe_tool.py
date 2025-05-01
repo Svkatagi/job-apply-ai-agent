@@ -9,7 +9,11 @@ from datetime import datetime
 from src.tools.logger_tool import log_event
 
 # 📂 Define output CSV path
-OUTPUT_FILE = "output/application_results.csv"
+#OUTPUT_FILE = "output/application_results.csv"
+# 🕰️ Create a unique filename per run (only once)
+RUN_TIMESTAMP = datetime.now().strftime("%Y-%m-%d_%H%M")
+OUTPUT_FILE = f"output/application_results_{RUN_TIMESTAMP}.csv"
+
 
 def record_application_result(link, status, job_summary):
     """

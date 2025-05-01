@@ -9,7 +9,7 @@ from src.tools.token_counter import count_tokens
 
 # 🧠 Configure Gemini model
 genai.configure(api_key=GOOGLE_API_KEY)
-model = genai.GenerativeModel("gemini-2.0-flash-exp")
+model = genai.GenerativeModel("gemini-2.0-flash") 
 
 def decide_next_actions(dom_html: str, memory_data: dict, job_context: dict = {}) -> dict:
     """
@@ -83,14 +83,39 @@ You are a strict, high-precision agentic AI working for an Auto-Apply bot.
     - Estimate match between memory_data and job qualifications/responsibilities.
     - Consider role, skills, experience, and location alignment.
 
-4. Before suggesting an action:
-    - Skip typing if the input field has a non-empty `value` attribute.
-    - Skip checking/selecting if the element is already selected (e.g. `checked="true"`).
-    - Avoid clicking a submit button if the DOM shows submission confirmation (e.g. "Thank you", "already applied").
+4. Form-Filling Rules:
+   - Identify all form fields: input, select, radio, checkbox, file upload.
+   - If a field is **required** (e.g. has `required`, `aria-required="true"`, or label contains *):
+     - If field is **empty** ➔ Add an action to type/select using memory_data.
+     - If field is **pre-filled**:
+         - If correct ➔ skip.
+         - If incorrect ➔ first clear it (if needed), then add an action to overwrite.
+   - If a field is optional and already correct ➔ skip.
+   - Add **click** actions only for buttons that clearly mean:
+     - Submit, Apply, Continue, Next, or similar.
+   - Do **not** repeat or retype values unnecessarily.
+   - Do **not** click submit buttons if submission is already complete.
 
-5. Always plan only what is **required** based on the current DOM state.
-    - Never suggest duplicate or redundant actions.
-    - Avoid resubmitting already completed forms.
+5. Always include a **click** action for any button that clearly signals forward progression or submission in the job application.
+
+   - This includes buttons labeled with or containing phrases like:
+     - "Apply", "Apply Now", "Submit", "Submit Application", "Start Application"
+     - "Continue", "Next", "Proceed", "Finish", "Confirm", "Complete", "Finalize"
+     - "Review and Submit", "Go to Next Step", or similar.
+
+   - These buttons may appear as:
+     - `<button>`, `<input type="submit">`, `<a>` tags styled as buttons, `<span>`/`<div>` elements with button behavior.
+
+   - Even if they are not technically required or lack a "required" attribute, **ALWAYS** add a `click` action if they likely lead to:
+     - form submission,
+     - the next page of the application,
+     - or the next section in a multi-step application.
+
+   - Do **NOT** click buttons like:
+     - "Cancel", "Back", "Reset", "Close", or navigation buttons that **exit**, **restart**, or go **backward**.
+
+   - Do **NOT** click these buttons if the DOM indicates the application has **already been submitted**, e.g. messages like:
+     - "Thank you", "Application submitted", "You've already applied", etc.
 
 6. If the DOM includes a file input for "Cover Letter":
     - Generate a tailored professional cover letter under "cover_letter_text".
